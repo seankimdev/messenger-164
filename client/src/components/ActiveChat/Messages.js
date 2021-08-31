@@ -6,9 +6,13 @@ import moment from "moment";
 const Messages = (props) => {
   const { messages, otherUser, userId } = props;
 
+  const sortedMessages = messages.sort(function (a, b) {
+    return a.createdAt.localeCompare(b.createdAt);
+  });
+
   return (
     <Box>
-      {messages.map((message) => {
+      {sortedMessages.map((message) => {
         const time = moment(message.createdAt).format("h:mm");
 
         return message.senderId === userId ? (
