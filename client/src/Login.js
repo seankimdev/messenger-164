@@ -31,7 +31,7 @@ const Login = (props) => {
     <Grid container justify="center">
       <Box>
         <Grid container item>
-          <Typography>Need to register?</Typography>
+          <Typography>Don't have an account?</Typography>
           <Button onClick={() => history.push("/register")}>Register</Button>
         </Grid>
         <form onSubmit={handleLogin}>
@@ -55,7 +55,12 @@ const Login = (props) => {
               />
             </FormControl>
             <Grid>
-              <Button type="submit" variant="contained" size="large">
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                size="large"
+              >
                 Login
               </Button>
             </Grid>
