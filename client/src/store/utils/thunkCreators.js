@@ -67,12 +67,24 @@ export const logout = (id) => async (dispatch) => {
   }
 };
 
+const sortMessage = (messages) => {
+  return messages.sort(function (a, b) {
+    return a.createdAt.localeCompare(b.createdAt);
+  });
+};
+
 // CONVERSATIONS THUNK CREATORS
 
 export const fetchConversations = () => async (dispatch) => {
   try {
     const { data } = await axios.get("/api/conversations");
-    dispatch(getConversations(data));
+
+    const sortedData = data;
+    for (let i of sortedData) {
+      i.messages = sortMessage(i.messages);
+    }
+
+    dispatch(getConversations(sortedData));
   } catch (error) {
     console.error(error);
   }
