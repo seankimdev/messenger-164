@@ -4,16 +4,15 @@ import { connect } from "react-redux";
 import {
   makeStyles,
   Grid,
-  Box,
   Typography,
   Button,
   FormControl,
   TextField,
-  Paper,
-  Container,
-  CssBaseline,
+  Hidden,
 } from "@material-ui/core";
+
 import bgImage from "../src/images/bg-img.png";
+import { ReactComponent as BubbleSvg } from "../src/images/bubble.svg";
 
 import { login } from "./store/utils/thunkCreators";
 
@@ -21,46 +20,39 @@ const useStyles = makeStyles((theme) => ({
   root: {
     height: "100vh",
   },
-  image: {
-    backgroundImage: `linear-gradient(#3a8dff90, #86b9ff90), url(${bgImage})`,
+  bgImage: {
+    backgroundImage: `linear-gradient(#3a8dffcc, #86b9ffcc), url(${bgImage})`,
     backgroundRepeat: "no-repeat",
     backgroundSize: "cover",
     backgroundPosition: "center",
   },
   paper: {
-    margin: theme.spacing(8, 4),
+    margin: theme.spacing(4, 4),
     display: "flex",
     flexDirection: "column",
-    alignItems: "center",
   },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
+  formContainer: {
+    padding: "10%",
   },
   form: {
-    width: "100%", // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
+    width: "100%",
   },
 
-  // buttonPadding: {
-  //   padding: "10px 30px",
-  // },
-  // media: {
-  //   // height: 100,
-  //   // paddingTop: "56.25%", // 16:9
-  // },
-  // card: {
-  //   position: "relative",
-  // },
   overlay: {
     color: "white",
     width: "70%",
-    p: {
-      fontSize: "25px",
-    },
+    textAlign: "center",
+  },
+  bubbleSvg: {
+    width: "50px",
+    marginBottom: "20px",
+  },
+  buttonSize: {
+    width: "140px",
+    height: "40px",
+  },
+  buttonShadow: {
+    boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.1)",
   },
 }));
 
@@ -84,46 +76,76 @@ const Login = (props) => {
 
   return (
     <Grid container component="main" className={classes.root}>
-      {/* <CssBaseline /> */}
-      <Grid
-        container
-        item
-        xs={false}
-        sm={5}
-        className={classes.image}
-        justifyContent="center"
-        alignItems="center"
-      >
-        <Grid item className={classes.overlay}>
-          <Typography>Converse with anyone with any language</Typography>
+      <Hidden only="xs">
+        <Grid
+          container
+          item
+          xs={false}
+          sm={5}
+          className={classes.bgImage}
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Grid
+            container
+            item
+            direction="column"
+            className={classes.overlay}
+            alignItems="center"
+          >
+            <BubbleSvg className={classes.bubbleSvg} />
+            <Typography>Converse with anyone with any language</Typography>
+          </Grid>
         </Grid>
-      </Grid>
-      <Grid item xs={12} sm={7} component={Paper} elevation={6} square>
+      </Hidden>
+      <Grid item xs={12} sm={7}>
         <div className={classes.paper}>
           <Grid
             container
             direction="row"
-            justifyContent="flex-end"
+            justify="flex-end"
             alignItems="center"
             spacing={3}
           >
             <Grid item>
-              <Typography>Don't have an account?</Typography>
+              <Typography style={{ fontSize: "12px", color: "gray" }}>
+                Don't have an account?
+              </Typography>
             </Grid>
             <Grid item>
               <Button
                 onClick={() => history.push("/register")}
                 color="primary"
-                variant="outlined"
-                className={classes.buttonPadding}
+                className={`${classes.buttonSize} ${classes.buttonShadow}`}
               >
                 Create account
               </Button>
             </Grid>
           </Grid>
-          <form onSubmit={handleLogin} className={classes.form}>
-            <Grid>
-              <Grid>
+
+          <Grid
+            container
+            direction="column"
+            align="center"
+            className={classes.formContainer}
+          >
+            <Typography
+              variant="h6"
+              style={{
+                textAlign: "left",
+                fontWeight: "800",
+                marginTop: "50px",
+              }}
+            >
+              Welcome back!
+            </Typography>
+            <form onSubmit={handleLogin} className={classes.form}>
+              <Grid
+                container
+                direction="column"
+                justify="center"
+                align="center"
+              >
                 <FormControl margin="normal" required>
                   <TextField
                     aria-label="username"
@@ -132,107 +154,33 @@ const Login = (props) => {
                     type="text"
                   />
                 </FormControl>
+
+                <FormControl margin="normal" required>
+                  <TextField
+                    label="Password"
+                    aria-label="password"
+                    type="password"
+                    name="password"
+                  />
+                </FormControl>
+
+                <Grid>
+                  <Button
+                    type="submit"
+                    color="primary"
+                    variant="contained"
+                    className={classes.buttonSize}
+                    style={{ marginTop: "50px" }}
+                  >
+                    Login
+                  </Button>
+                </Grid>
               </Grid>
-              <FormControl margin="normal" required>
-                <TextField
-                  label="password"
-                  aria-label="password"
-                  type="password"
-                  name="password"
-                />
-              </FormControl>
-              <Grid>
-                <Button
-                  type="submit"
-                  color="primary"
-                  variant="contained"
-                  className={classes.buttonPadding}
-                >
-                  Login
-                </Button>
-              </Grid>
-            </Grid>
-          </form>
+            </form>
+          </Grid>
         </div>
       </Grid>
     </Grid>
-
-    // <Container>
-    //   <Grid container justify="center">
-    //     <Grid item xs={12} sm={3} justify="center">
-    //       <Card className={classes.card}>
-    //         <CardMedia
-    //           component="img"
-    //           image="../src/images/bg-img.png"
-    //           className={classes.media}
-    //         />
-    //         <Box className={classes.overlay}>
-    //           <Typography>Converse with anyone with any language</Typography>
-    //         </Box>
-    //       </Card>
-    //     </Grid>
-
-    //     <Grid item xs={12} sm={7}>
-    //       <Container p={5}>
-    //         <Grid container item>
-    //           <Grid
-    //             container
-    //             direction="row"
-    //             justifyContent="flex-end"
-    //             alignItems="center"
-    //             spacing={3}
-    //           >
-    //             <Grid item>
-    //               <Typography>Don't have an account?</Typography>
-    //             </Grid>
-    //             <Grid item>
-    //               <Button
-    //                 onClick={() => history.push("/register")}
-    //                 color="primary"
-    //                 variant="outlined"
-    //                 className={classes.buttonPadding}
-    //               >
-    //                 Create account
-    //               </Button>
-    //             </Grid>
-    //           </Grid>
-    //         </Grid>
-    //         <form onSubmit={handleLogin}>
-    //           <Grid>
-    //             <Grid>
-    //               <FormControl margin="normal" required>
-    //                 <TextField
-    //                   aria-label="username"
-    //                   label="Username"
-    //                   name="username"
-    //                   type="text"
-    //                 />
-    //               </FormControl>
-    //             </Grid>
-    //             <FormControl margin="normal" required>
-    //               <TextField
-    //                 label="password"
-    //                 aria-label="password"
-    //                 type="password"
-    //                 name="password"
-    //               />
-    //             </FormControl>
-    //             <Grid>
-    //               <Button
-    //                 type="submit"
-    //                 color="primary"
-    //                 variant="contained"
-    //                 className={classes.buttonPadding}
-    //               >
-    //                 Login
-    //               </Button>
-    //             </Grid>
-    //           </Grid>
-    //         </form>
-    //       </Container>
-    //     </Grid>
-    //   </Grid>
-    // </Container>
   );
 };
 
