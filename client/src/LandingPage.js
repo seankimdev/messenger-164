@@ -1,20 +1,19 @@
 import React from "react";
-import { Redirect, useHistory } from "react-router-dom";
+import { Redirect, useHistory, useParams } from "react-router-dom";
 import { connect } from "react-redux";
 import {
   makeStyles,
   Grid,
   Typography,
   Button,
-  FormControl,
-  TextField,
   Hidden,
+  Box,
 } from "@material-ui/core";
 
 import bgImage from "../src/images/bg-img.png";
 import { ReactComponent as BubbleSvg } from "../src/images/bubble.svg";
 
-import { login } from "./store/utils/thunkCreators";
+import Form from "./Form";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,9 +32,6 @@ const useStyles = makeStyles((theme) => ({
   },
   formContainer: {
     padding: "10%",
-  },
-  form: {
-    width: "100%",
   },
 
   overlay: {
@@ -56,19 +52,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MainPage = (props) => {
+const LandingPage = (props) => {
   const history = useHistory();
-  const { user, login } = props;
+  const { user } = props;
+  const { pageParam } = useParams();
+  const toPage = pageParam === "register" ? "login" : "register";
 
   const classes = useStyles();
-
-  const handleLogin = async (event) => {
-    event.preventDefault();
-    const username = event.target.username.value;
-    const password = event.target.password.value;
-
-    await login({ username, password });
-  };
 
   if (user.id) {
     return <Redirect to="/home" />;
@@ -99,7 +89,7 @@ const MainPage = (props) => {
         </Grid>
       </Hidden>
       <Grid item xs={12} sm={7}>
-        <div className={classes.paper}>
+        <Box className={classes.paper}>
           <Grid
             container
             direction="row"
@@ -109,16 +99,18 @@ const MainPage = (props) => {
           >
             <Grid item>
               <Typography style={{ fontSize: "12px", color: "gray" }}>
-                Don't have an account?
+                {pageParam === "register"
+                  ? "Already have an account?"
+                  : "Don't have an account?"}
               </Typography>
             </Grid>
             <Grid item>
               <Button
-                onClick={() => history.push("/register")}
+                onClick={() => history.push(`/landingpage/${toPage}`)}
                 color="primary"
                 className={`${classes.buttonSize} ${classes.buttonShadow}`}
               >
-                Create account
+                {pageParam === "register" ? "Login" : "Create account"}
               </Button>
             </Grid>
           </Grid>
@@ -140,48 +132,9 @@ const MainPage = (props) => {
               Welcome back!
             </Typography>
 
-              
-
-            <form onSubmit={handleLogin} className={classes.form}>
-              <Grid
-                container
-                direction="column"
-                justify="center"
-                align="center"
-              >
-                <FormControl margin="normal" required>
-                  <TextField
-                    aria-label="username"
-                    label="Username"
-                    name="username"
-                    type="text"
-                  />
-                </FormControl>
-
-                <FormControl margin="normal" required>
-                  <TextField
-                    label="Password"
-                    aria-label="password"
-                    type="password"
-                    name="password"
-                  />
-                </FormControl>
-
-                <Grid>
-                  <Button
-                    type="submit"
-                    color="primary"
-                    variant="contained"
-                    className={classes.buttonSize}
-                    style={{ marginTop: "50px" }}
-                  >
-                    Login
-                  </Button>
-                </Grid>
-              </Grid>
-            </form>
+            <Form pageParam={pageParam}> </Form>
           </Grid>
-        </div>
+        </Box>
       </Grid>
     </Grid>
   );
@@ -193,12 +146,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    login: (credentials) => {
-      dispatch(login(credentials));
-    },
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(MainPage);
+export default connect(mapStateToProps)(LandingPage);

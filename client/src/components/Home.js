@@ -31,7 +31,7 @@ const Home = (props) => {
 
   if (!user.id) {
     // If we were previously logged in, redirect to login instead of register
-    if (isLoggedIn) return <Redirect to="/login" />;
+    if (isLoggedIn) return <Redirect to="/landingpage/login" />;
     return <Redirect to="/register" />;
   }
 
