@@ -129,7 +129,9 @@ const LandingPage = (props) => {
                 marginTop: "50px",
               }}
             >
-              Welcome back!
+              {pageParam === "register"
+                ? "Create an account."
+                : "Welcome back!"}
             </Typography>
 
             <Form pageParam={pageParam}> </Form>
