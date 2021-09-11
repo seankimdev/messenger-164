@@ -80,7 +80,7 @@ const Form = (props) => {
             color="primary"
             variant="contained"
             className={classes.buttonSize}
-            style={{ marginTop: "50px" }}
+            style={{ marginTop: "30px" }}
           >
             {pageParam === "register" ? "Register" : "Login"}
           </Button>
@@ -135,7 +135,7 @@ const Form = (props) => {
             color="primary"
             variant="contained"
             className={classes.buttonSize}
-            style={{ marginTop: "50px" }}
+            style={{ marginTop: "30px" }}
           >
             Create
           </Button>
