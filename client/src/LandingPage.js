@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
   },
   bubbleSvg: {
     width: "50px",
-    marginBottom: "20px",
+    marginBottom: theme.spacing(3),
   },
   buttonSize: {
     width: "140px",
@@ -50,13 +50,22 @@ const useStyles = makeStyles((theme) => ({
   buttonShadow: {
     boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.1)",
   },
+  typoBesideButton: {
+    fontSize: "12px",
+    color: "gray",
+  },
+  typoWelcome: {
+    textAlign: "left",
+    fontWeight: "800",
+    marginTop: "20vh",
+  },
 }));
 
 const LandingPage = (props) => {
   const history = useHistory();
   const { user } = props;
   const { pageParam } = useParams();
-  const toPage = pageParam === "register" ? "login" : "register";
+  const isRegisterPage = pageParam === "register";
 
   const classes = useStyles();
 
@@ -98,19 +107,23 @@ const LandingPage = (props) => {
             spacing={3}
           >
             <Grid item>
-              <Typography style={{ fontSize: "12px", color: "gray" }}>
-                {pageParam === "register"
+              <Typography className={classes.typoBesideButton}>
+                {isRegisterPage
                   ? "Already have an account?"
                   : "Don't have an account?"}
               </Typography>
             </Grid>
             <Grid item>
               <Button
-                onClick={() => history.push(`/landingpage/${toPage}`)}
+                onClick={() =>
+                  history.push(
+                    `/landingpage/${isRegisterPage ? "login" : "register"}`
+                  )
+                }
                 color="primary"
                 className={`${classes.buttonSize} ${classes.buttonShadow}`}
               >
-                {pageParam === "register" ? "Login" : "Create account"}
+                {isRegisterPage ? "Login" : "Create account"}
               </Button>
             </Grid>
           </Grid>
@@ -121,17 +134,8 @@ const LandingPage = (props) => {
             align="center"
             className={classes.formContainer}
           >
-            <Typography
-              variant="h6"
-              style={{
-                textAlign: "left",
-                fontWeight: "800",
-                marginTop: "50px",
-              }}
-            >
-              {pageParam === "register"
-                ? "Create an account."
-                : "Welcome back!"}
+            <Typography variant="h6" className={classes.typoWelcome}>
+              {isRegisterPage ? "Create an account." : "Welcome back!"}
             </Typography>
 
             <Form pageParam={pageParam}> </Form>
