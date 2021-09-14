@@ -3,11 +3,14 @@ import { createTheme } from "@material-ui/core";
 export const theme = createTheme({
   typography: {
     fontFamily: "Open Sans, sans-serif",
-    fontSize: 14,
+    fontSize: 16,
+    fontWeight: "600",
     button: {
+      fontFamily: "Montserrat, sans-serif",
       textTransform: "none",
       letterSpacing: 0,
-      fontWeight: "bold",
+      fontSize: 12,
+      fontWeight: "600",
     },
   },
   overrides: {
