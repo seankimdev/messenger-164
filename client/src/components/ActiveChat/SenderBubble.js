@@ -1,13 +1,15 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Box, Typography, Grid } from "@material-ui/core";
+import { Box, Typography } from "@material-ui/core";
+
+import ImageBubble from "./ImageBubble";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-end",
-    maxHeight: "100vh",
+    marginTop: 15,
   },
   date: {
     fontSize: 11,
@@ -26,17 +28,6 @@ const useStyles = makeStyles((theme) => ({
     background: "#F4F6FA",
     borderRadius: "10px 10px 0 10px",
   },
-  imgContainer: {
-    justifyContent: "flex-end",
-    gap: theme.spacing(1),
-  },
-  imgBubble: {
-    width: "100px",
-  },
-  img: {
-    width: "100%",
-    borderRadius: "10px 10px 0 ",
-  },
 }));
 
 const SenderBubble = (props) => {
@@ -44,25 +35,14 @@ const SenderBubble = (props) => {
   const { time, text, imgs } = props;
   return (
     <Box className={classes.root}>
-      {text ? (
+      <Typography className={classes.date}>{time}</Typography>
+      {imgs && <ImageBubble imgs={imgs} sender="user" />}
+
+      {text && (
         <Box className={classes.bubble}>
           <Typography className={classes.text}>{text}</Typography>
         </Box>
-      ) : (
-        ""
       )}
-      <Grid container className={classes.imgContainer}>
-        {imgs
-          ? imgs.map((img) => {
-              return (
-                <Box key={img} className={classes.imgBubble}>
-                  <img className={classes.img} src={img} alt="attachment" />
-                </Box>
-              );
-            })
-          : ""}
-      </Grid>
-      <Typography className={classes.date}>{time}</Typography>
     </Box>
   );
 };

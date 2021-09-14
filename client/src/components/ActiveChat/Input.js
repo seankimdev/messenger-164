@@ -1,10 +1,12 @@
-import React, { useState } from "react";
-import { FormControl, FilledInput } from "@material-ui/core";
+import React, { useState, useRef } from "react";
+import { FormControl, FilledInput, IconButton, Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
 import { postMessage } from "../../store/utils/thunkCreators";
 
-const useStyles = makeStyles(() => ({
+import FileCopyOutlinedIcon from "@material-ui/icons/FileCopyOutlined";
+
+const useStyles = makeStyles((theme) => ({
   root: {
     justifySelf: "flex-end",
     marginTop: 15,
@@ -15,13 +17,35 @@ const useStyles = makeStyles(() => ({
     borderRadius: 8,
     marginBottom: 20,
   },
+  fileInput: {
+    display: "none",
+  },
+  uploadButton: {
+    border: "0",
+    position: "absolute",
+    right: "10px",
+    top: "10px",
+    color: "lightgray",
+  },
+  previewImgsContainer: {
+    gap: theme.spacing(1),
+    paddingBottom: theme.spacing(2),
+  },
+  previewImg: {
+    width: "60px",
+    height: "60px",
+    objectFit: "cover",
+  },
 }));
 
 const Input = (props) => {
   const classes = useStyles();
   const [text, setText] = useState("");
   const [imagesSelected, setImagesSelected] = useState("");
+  const [previewUrls, setPreviewUrls] = useState([]);
   const { postMessage, otherUser, conversationId, user } = props;
+
+  const fileInput = useRef(null);
 
   const handleChange = (event) => {
     setText(event.target.value);
@@ -62,7 +86,18 @@ const Input = (props) => {
       await postMessage(reqBody);
       setText("");
       setImagesSelected("");
+      setPreviewUrls([]);
     }
+  };
+
+  const handleImgChange = (e) => {
+    const files = e.target.files;
+    setImagesSelected(files);
+    let urls = [];
+    for (const file of files) {
+      urls.push(URL.createObjectURL(file));
+    }
+    setPreviewUrls(urls);
   };
 
   return (
@@ -76,15 +111,27 @@ const Input = (props) => {
           name="text"
           onChange={handleChange}
         />
+        <Grid container className={classes.previewImgsContainer}>
+          {previewUrls.map((imgUrl) => {
+            return (
+              <img className={classes.previewImg} src={imgUrl} alt="temp-alt" />
+            );
+          })}
+        </Grid>
         <input
           type="file"
           name="file"
           multiple
-          onChange={(e) => {
-            console.log(e.target.files);
-            setImagesSelected(e.target.files);
-          }}
+          ref={fileInput}
+          onChange={handleImgChange}
+          className={classes.fileInput}
         />
+        <IconButton
+          className={classes.uploadButton}
+          onClick={() => fileInput.current.click()}
+        >
+          <FileCopyOutlinedIcon />
+        </IconButton>
       </FormControl>
     </form>
   );
