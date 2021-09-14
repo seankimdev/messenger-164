@@ -20,21 +20,46 @@ const useStyles = makeStyles(() => ({
 const Input = (props) => {
   const classes = useStyles();
   const [text, setText] = useState("");
+  const [imagesSelected, setImagesSelected] = useState("");
+  const [imageUrls, setImageUrls] = useState([]);
   const { postMessage, otherUser, conversationId, user } = props;
 
   const handleChange = (event) => {
     setText(event.target.value);
   };
 
+  const uploadImage = async () => {
+    setImageUrls([]);
+    const imgUrlArr = [];
+    for (const image of imagesSelected) {
+      const formData = new FormData();
+      formData.append("upload_preset", "tprhpi9l");
+      formData.append("file", image);
+      const response = await fetch(
+        "https://api.cloudinary.com/v1_1/ddnvwcgij/image/upload",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+      const resJson = await response.json();
+      imgUrlArr.push(resJson.secure_url);
+    }
+    setImageUrls(imgUrlArr);
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     // add sender user info if posting to a brand new convo, so that the other user will have access to username, profile pic, etc.
+    await uploadImage();
     const reqBody = {
-      text: event.target.text.value,
       recipientId: otherUser.id,
       conversationId,
       sender: conversationId ? null : user,
+      text: event.target.text.value,
+      attachments: imageUrls,
     };
+    console.log(reqBody);
     await postMessage(reqBody);
     setText("");
   };
@@ -49,6 +74,14 @@ const Input = (props) => {
           value={text}
           name="text"
           onChange={handleChange}
+        />
+        <input
+          type="file"
+          multiple
+          onChange={(e) => {
+            console.log(e.target.files);
+            setImagesSelected(e.target.files);
+          }}
         />
       </FormControl>
     </form>
