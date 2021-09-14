@@ -21,7 +21,6 @@ const Input = (props) => {
   const classes = useStyles();
   const [text, setText] = useState("");
   const [imagesSelected, setImagesSelected] = useState("");
-  const [imageUrls, setImageUrls] = useState([]);
   const { postMessage, otherUser, conversationId, user } = props;
 
   const handleChange = (event) => {
@@ -29,7 +28,7 @@ const Input = (props) => {
   };
 
   const uploadImage = async () => {
-    setImageUrls([]);
+    // setImageUrls([]);
     const imgUrlArr = [];
     for (const image of imagesSelected) {
       const formData = new FormData();
@@ -45,23 +44,25 @@ const Input = (props) => {
       const resJson = await response.json();
       imgUrlArr.push(resJson.secure_url);
     }
-    setImageUrls(imgUrlArr);
+    return imgUrlArr;
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    // add sender user info if posting to a brand new convo, so that the other user will have access to username, profile pic, etc.
-    await uploadImage();
-    const reqBody = {
-      recipientId: otherUser.id,
-      conversationId,
-      sender: conversationId ? null : user,
-      text: event.target.text.value,
-      attachments: imageUrls,
-    };
-    console.log(reqBody);
-    await postMessage(reqBody);
-    setText("");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (text || imagesSelected) {
+      // add sender user info if posting to a brand new convo, so that the other user will have access to username, profile pic, etc.
+      const imageUrls = await uploadImage();
+      const reqBody = {
+        recipientId: otherUser.id,
+        conversationId,
+        sender: conversationId ? null : user,
+        text: e.target.text.value,
+        attachments: imageUrls,
+      };
+      await postMessage(reqBody);
+      setText("");
+      setImagesSelected("");
+    }
   };
 
   return (
@@ -77,6 +78,7 @@ const Input = (props) => {
         />
         <input
           type="file"
+          name="file"
           multiple
           onChange={(e) => {
             console.log(e.target.files);
