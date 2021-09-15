@@ -13,24 +13,36 @@ const useStyles = makeStyles((theme) => ({
     width: "90px",
     height: "70px",
   },
-  img: {
+  img: (props) => ({
     width: "100%",
     height: "100%",
     objectFit: "cover",
-  },
-  senderUser: {
-    borderRadius: "10px 10px 0 ",
-  },
-  senderOther: {
-    borderRadius: "0 10px 10px 10px",
-  },
+    borderRadius: props.bubbleBorder,
+  }),
+  // senderUser: {
+  //   borderRadius: "10px 10px 0 ",
+  // },
+  // senderOther: {
+  //   borderRadius: "0 10px 10px 10px",
+  // },
 }));
 
-const ImageBubble = (props) => {
-  const classes = useStyles();
-  const { imgs, sender } = props;
+const ImgComponent = (props) => {
+  const { img, sender } = props;
+  const bubbleBorder = sender === "user" ? "10px 10px 0 " : "0 10px 10px 10px";
 
+  const styleProps = {
+    bubbleBorder: bubbleBorder,
+  };
+  const classes = useStyles(styleProps);
+  return <img className={classes.img} src={img} alt="attachment" />;
+};
+
+const ImageBubble = (props) => {
+  const { imgs, sender } = props;
   const multiImgs = imgs.length > 1;
+
+  const classes = useStyles();
 
   return (
     <Grid container className={classes.imgContainer}>
@@ -40,13 +52,7 @@ const ImageBubble = (props) => {
             key={img}
             className={`${classes.imgBubble} ${multiImgs && classes.imgMulti}`}
           >
-            <img
-              className={`${classes.img} ${
-                sender === "user" ? classes.senderUser : classes.senderOther
-              }`}
-              src={img}
-              alt="attachment"
-            />
+            <ImgComponent sender={sender} img={img} />
           </Box>
         );
       })}

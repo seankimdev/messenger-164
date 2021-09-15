@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import axios from "axios";
 import { FormControl, FilledInput, IconButton, Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
@@ -52,14 +53,14 @@ const Input = (props) => {
   };
 
   const uploadImage = async () => {
-    // setImageUrls([]);
     const imgUrlArr = [];
     for (const image of imagesSelected) {
       const formData = new FormData();
-      formData.append("upload_preset", "tprhpi9l");
+      formData.append("upload_preset", process.env.REACT_APP_CLOUDINARY_PRESET);
       formData.append("file", image);
+
       const response = await fetch(
-        "https://api.cloudinary.com/v1_1/ddnvwcgij/image/upload",
+        `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`,
         {
           method: "POST",
           body: formData,
@@ -68,6 +69,27 @@ const Input = (props) => {
       const resJson = await response.json();
       imgUrlArr.push(resJson.secure_url);
     }
+
+    // const uploaders = [...imagesSelected].map((image) => {
+    //   const formData = new FormData();
+    //   formData.append("file", image);
+    //   formData.append("upload_preset", process.env.CLOUDINARY_PRESET);
+    //   // Make an AJAX upload request using Axios (replace Cloudinary URL below with your own)
+    //   const promise = fetch(
+    //     `https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload`,
+    //     {
+    //       method: "POST",
+    //       body: formData,
+    //     }
+    //   );
+    //   console.log(promise);
+    //   return promise;
+    // });
+    // const response = await Promise.all(uploaders);
+    // console.log(response);
+    // const imgUrlArr = response.map((img) => {
+    //   return img.url;
+    // });
     return imgUrlArr;
   };
 
