@@ -46,6 +46,9 @@ const Input = (props) => {
   const [previewUrls, setPreviewUrls] = useState([]);
   const { postMessage, otherUser, conversationId, user } = props;
 
+  const cloudinaryName = process.env.REACT_APP_CLOUDINARY_CLOUD_NAME;
+  const cloudinaryPreset = process.env.REACT_APP_CLOUDINARY_PRESET;
+
   const fileInput = useRef(null);
 
   const handleChange = (event) => {
@@ -53,44 +56,22 @@ const Input = (props) => {
   };
 
   const uploadImage = async () => {
-    const imgUrlArr = [];
+    const promiseArr = [];
     for (const image of imagesSelected) {
       const formData = new FormData();
-      formData.append("upload_preset", process.env.REACT_APP_CLOUDINARY_PRESET);
+      formData.append("upload_preset", cloudinaryPreset);
       formData.append("file", image);
-
-      const response = await fetch(
-        `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`,
-        {
-          method: "POST",
-          body: formData,
-        }
+      promiseArr.push(
+        axios.post(
+          `https://api.cloudinary.com/v1_1/${cloudinaryName}/image/upload`,
+          formData
+        )
       );
-      const resJson = await response.json();
-      imgUrlArr.push(resJson.secure_url);
     }
-
-    // const uploaders = [...imagesSelected].map((image) => {
-    //   const formData = new FormData();
-    //   formData.append("file", image);
-    //   formData.append("upload_preset", process.env.CLOUDINARY_PRESET);
-    //   // Make an AJAX upload request using Axios (replace Cloudinary URL below with your own)
-    //   const promise = fetch(
-    //     `https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload`,
-    //     {
-    //       method: "POST",
-    //       body: formData,
-    //     }
-    //   );
-    //   console.log(promise);
-    //   return promise;
-    // });
-    // const response = await Promise.all(uploaders);
-    // console.log(response);
-    // const imgUrlArr = response.map((img) => {
-    //   return img.url;
-    // });
-    return imgUrlArr;
+    return Promise.all(promiseArr).then((res) => {
+      const urlArr = res.map((obj) => obj.data.url);
+      return urlArr;
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -134,9 +115,14 @@ const Input = (props) => {
           onChange={handleChange}
         />
         <Grid container className={classes.previewImgsContainer}>
-          {previewUrls.map((imgUrl) => {
+          {previewUrls.map((imgUrl, i) => {
             return (
-              <img className={classes.previewImg} src={imgUrl} alt="temp-alt" />
+              <img
+                key={`imgKey${i}`}
+                className={classes.previewImg}
+                src={imgUrl}
+                alt="temp-alt"
+              />
             );
           })}
         </Grid>

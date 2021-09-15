@@ -17,19 +17,19 @@ const Messages = (props) => {
 
   return (
     <Box className={classes.root}>
-      {messages.map((message) => {
+      {messages.map((message, i) => {
         const time = moment(message.createdAt).format("h:mm");
 
         return message.senderId === userId ? (
           <SenderBubble
-            key={message.id}
+            key={`${i}senderBubble`}
             text={message.text}
             imgs={message.attachments}
             time={time}
           />
         ) : (
           <OtherUserBubble
-            key={message.id}
+            key={`${i}otherBubble`}
             text={message.text}
             imgs={message.attachments}
             time={time}
