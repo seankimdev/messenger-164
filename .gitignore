@@ -19,4 +19,3 @@ yarn-debug.log*
 yarn-error.log*
 
 server/.env
-client/.env
